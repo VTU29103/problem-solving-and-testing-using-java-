@@ -1,0 +1,31 @@
+public static List<Integer> maxSubarray(List<Integer> arr) {
+
+    int currentSum = arr.get(0);
+    int maxSubarray = arr.get(0);
+
+    int maxSubsequence = arr.get(0);
+    int positiveSum = 0;
+
+    for (int i = 1; i < arr.size(); i++) {
+
+        int num = arr.get(i);
+
+        // Maximum subarray (Kadane's Algorithm)
+        currentSum = Math.max(num, currentSum + num);
+        maxSubarray = Math.max(maxSubarray, currentSum);
+
+        // Maximum subsequence
+        maxSubsequence = Math.max(maxSubsequence, num);
+
+        if (num > 0) {
+            positiveSum += num;
+        }
+    }
+
+    // If there are positive numbers, take all positive numbers
+    if (positiveSum > 0) {
+        maxSubsequence = positiveSum;
+    }
+
+    return Arrays.asList(maxSubarray, maxSubsequence);
+}
