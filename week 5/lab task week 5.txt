@@ -1,0 +1,313 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+class Rider {
+    int id;
+    String name;
+    String pickup;
+    String destination;
+
+    Rider(int id, String name, String pickup, String destination) {
+        this.id = id;
+        this.name = name;
+        this.pickup = pickup;
+        this.destination = destination;
+    }
+}
+
+class Driver {
+    int id;
+    String name;
+    String location;
+    boolean available;
+
+    Driver(int id, String name, String location) {
+        this.id = id;
+        this.name = name;
+        this.location = location;
+        this.available = true;
+    }
+}
+
+class Ride {
+    int id;
+    Rider rider;
+    Driver driver;
+    double distance;
+    double fare;
+    String status;
+
+    Ride(int id, Rider rider, Driver driver, double distance) {
+        this.id = id;
+        this.rider = rider;
+        this.driver = driver;
+        this.distance = distance;
+        this.fare = 50 + (distance * 15);
+        this.status = "BOOKED";
+    }
+
+    void completeRide() {
+        status = "COMPLETED";
+        driver.available = true;
+        driver.location = rider.destination;
+    }
+
+    void display() {
+        System.out.println();
+        System.out.println("Ride ID: " + id);
+        System.out.println("Rider: " + rider.name);
+        System.out.println("Driver: " + driver.name);
+        System.out.println("Pickup: " + rider.pickup);
+        System.out.println("Destination: " + rider.destination);
+        System.out.println("Distance: " + distance + " km");
+        System.out.println("Fare: Rs." + fare);
+        System.out.println("Status: " + status);
+    }
+}
+
+public class Main {
+
+    static Scanner sc = new Scanner(System.in);
+
+    static ArrayList<Rider> riders = new ArrayList<>();
+    static ArrayList<Driver> drivers = new ArrayList<>();
+    static ArrayList<Ride> rides = new ArrayList<>();
+
+    static int riderId = 1;
+    static int driverId = 1;
+    static int rideId = 1;
+
+    static void addRider() {
+        System.out.print("Enter rider name: ");
+        String name = sc.nextLine();
+
+        System.out.print("Enter pickup location: ");
+        String pickup = sc.nextLine();
+
+        System.out.print("Enter destination: ");
+        String destination = sc.nextLine();
+
+        riders.add(new Rider(riderId, name, pickup, destination));
+        riderId++;
+
+        System.out.println("Rider added successfully.");
+    }
+
+    static void addDriver() {
+        System.out.print("Enter driver name: ");
+        String name = sc.nextLine();
+
+        System.out.print("Enter driver location: ");
+        String location = sc.nextLine();
+
+        drivers.add(new Driver(driverId, name, location));
+        driverId++;
+
+        System.out.println("Driver added successfully.");
+    }
+
+    static void bookRide() {
+
+        if (riders.size() == 0) {
+            System.out.println("No riders available.");
+            return;
+        }
+
+        if (drivers.size() == 0) {
+            System.out.println("No drivers available.");
+            return;
+        }
+
+        Driver selectedDriver = null;
+
+        for (Driver d : drivers) {
+            if (d.available) {
+                selectedDriver = d;
+                break;
+            }
+        }
+
+        if (selectedDriver == null) {
+            System.out.println("No available drivers.");
+            return;
+        }
+
+        System.out.println();
+        System.out.println("Available Riders:");
+
+        for (Rider r : riders) {
+            System.out.println(
+                r.id + " - " + r.name +
+                " (" + r.pickup + " to " + r.destination + ")"
+            );
+        }
+
+        System.out.print("Enter rider ID: ");
+        int id = Integer.parseInt(sc.nextLine());
+
+        Rider selectedRider = null;
+
+        for (Rider r : riders) {
+            if (r.id == id) {
+                selectedRider = r;
+                break;
+            }
+        }
+
+        if (selectedRider == null) {
+            System.out.println("Invalid rider ID.");
+            return;
+        }
+
+        System.out.print("Enter distance in km: ");
+        double distance = Double.parseDouble(sc.nextLine());
+
+        selectedDriver.available = false;
+
+        Ride ride = new Ride(
+            rideId,
+            selectedRider,
+            selectedDriver,
+            distance
+        );
+
+        rideId++;
+        rides.add(ride);
+
+        System.out.println();
+        System.out.println("Ride booked successfully.");
+        ride.display();
+    }
+
+    static void completeRide() {
+
+        if (rides.size() == 0) {
+            System.out.println("No rides available.");
+            return;
+        }
+
+        System.out.println();
+        System.out.println("Rides:");
+
+        for (Ride r : rides) {
+            System.out.println(
+                r.id + " - " +
+                r.rider.name + " - " +
+                r.status
+            );
+        }
+
+        System.out.print("Enter ride ID: ");
+        int id = Integer.parseInt(sc.nextLine());
+
+        for (Ride r : rides) {
+
+            if (r.id == id) {
+
+                if (r.status.equals("COMPLETED")) {
+                    System.out.println("Ride already completed.");
+                    return;
+                }
+
+                r.completeRide();
+
+                System.out.println("Ride completed successfully.");
+                r.display();
+
+                return;
+            }
+        }
+
+        System.out.println("Invalid ride ID.");
+    }
+
+    static void showDrivers() {
+
+        System.out.println();
+        System.out.println("--- Drivers ---");
+
+        if (drivers.size() == 0) {
+            System.out.println("No drivers available.");
+            return;
+        }
+
+        for (Driver d : drivers) {
+            System.out.println(
+                "ID: " + d.id +
+                ", Name: " + d.name +
+                ", Location: " + d.location +
+                ", Available: " + d.available
+            );
+        }
+    }
+
+    static void showRides() {
+
+        if (rides.size() == 0) {
+            System.out.println("No rides available.");
+            return;
+        }
+
+        System.out.println();
+        System.out.println("--- Rides ---");
+
+        for (Ride r : rides) {
+            r.display();
+        }
+    }
+
+    public static void main(String[] args) {
+
+        while (true) {
+
+            System.out.println();
+            System.out.println("===== RIDE SHARING PLATFORM =====");
+            System.out.println("1. Add Rider");
+            System.out.println("2. Add Driver");
+            System.out.println("3. Book Ride");
+            System.out.println("4. Complete Ride");
+            System.out.println("5. Show Drivers");
+            System.out.println("6. Show Rides");
+            System.out.println("7. Exit");
+
+            System.out.print("Enter choice: ");
+
+            int choice = Integer.parseInt(sc.nextLine());
+
+            switch (choice) {
+
+                case 1:
+                    addRider();
+                    break;
+
+                case 2:
+                    addDriver();
+                    break;
+
+                case 3:
+                    bookRide();
+                    break;
+
+                case 4:
+                    completeRide();
+                    break;
+
+                case 5:
+                    showDrivers();
+                    break;
+
+                case 6:
+                    showRides();
+                    break;
+
+                case 7:
+                    System.out.println("Program ended.");
+                    sc.close();
+                    return;
+
+                default:
+                    System.out.println("Invalid choice.");
+            }
+        }
+    }
+}
