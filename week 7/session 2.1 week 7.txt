@@ -1,0 +1,52 @@
+mport java.util.*;
+
+class UndergroundSystem {
+
+    // id -> [station, check-in time]
+    HashMap<Integer, Pair> checkInMap = new HashMap<>();
+
+    // "start,end" -> [total time, number of trips]
+    HashMap<String, double[]> travelMap = new HashMap<>();
+
+    public UndergroundSystem() {
+    }
+
+    public void checkIn(int id, String stationName, int t) {
+        checkInMap.put(id, new Pair(stationName, t));
+    }
+
+    public void checkOut(int id, String stationName, int t) {
+        Pair p = checkInMap.get(id);
+
+        String route = p.station + "," + stationName;
+        double time = t - p.time;
+
+        if (!travelMap.containsKey(route)) {
+            travelMap.put(route, new double[]{0, 0});
+        }
+
+        double[] data = travelMap.get(route);
+        data[0] += time;  // total time
+        data[1]++;        // number of trips
+
+        checkInMap.remove(id);
+    }
+
+    public double getAverageTime(String startStation, String endStation) {
+        String route = startStation + "," + endStation;
+
+        double[] data = travelMap.get(route);
+
+        return data[0] / data[1];
+    }
+
+    class Pair {
+        String station;
+        int time;
+
+        Pair(String station, int time) {
+            this.station = station;
+            this.time = time;
+        }
+    }
+}
