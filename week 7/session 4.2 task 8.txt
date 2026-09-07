@@ -1,0 +1,46 @@
+class Arithmetic {
+
+    // Method to add three integers
+    int add(int a, int b, int c) {
+        int sum;
+
+        sum = a + b + c;
+
+        return sum;
+    }
+}
+
+// Adder inherits all methods from Arithmetic
+class Adder extends Arithmetic {
+
+    // No additional method is required here.
+    // The add() method is inherited from Arithmetic.
+
+}
+
+public class Solution {
+
+    public static void main(String[] args) {
+
+        // Create an object of Adder
+        Adder adder = new Adder();
+
+        // Check the superclass name
+        System.out.println("My superclass is: "
+                + adder.getClass().getSuperclass().getName());
+
+        // Three integer values
+        int a = 42;
+        int b = 13;
+        int c = 20;
+
+        // Call the inherited add() method
+        int result = adder.add(a, b, c);
+
+        // Print the values
+        System.out.println(a + " " + b + " " + c);
+
+        // Print the sum
+        System.out.println("Sum = " + result);
+    }
+}
