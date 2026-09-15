@@ -1,0 +1,54 @@
+import java.util.*;
+
+public class Solution {
+
+    interface PerformOperation {
+        boolean check(int a);
+    }
+
+    public static boolean checker(PerformOperation p, int num) {
+        return p.check(num);
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        PerformOperation isOdd = n -> n % 2 != 0;
+
+        PerformOperation isPrime = n -> {
+            if (n < 2) return false;
+            for (int i = 2; i * i <= n; i++) {
+                if (n % i == 0) return false;
+            }
+            return true;
+        };
+
+        PerformOperation isPalindrome = n -> {
+            int original = n;
+            int reverse = 0;
+
+            while (n > 0) {
+                reverse = reverse * 10 + n % 10;
+                n /= 10;
+            }
+
+            return original == reverse;
+        };
+
+        int T = sc.nextInt();
+
+        while (T-- > 0) {
+            int choice = sc.nextInt();
+            int num = sc.nextInt();
+
+            if (choice == 1)
+                System.out.println(checker(isOdd, num));
+            else if (choice == 2)
+                System.out.println(checker(isPrime, num));
+            else if (choice == 3)
+                System.out.println(checker(isPalindrome, num));
+        }
+
+        sc.close();
+    }
+}
